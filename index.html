@@ -14,6 +14,7 @@
       --chat-bg: rgba(10, 14, 26, 0.96);
       --user-bubble: rgba(0, 210, 255, 0.18);
       --ai-bubble: rgba(255, 255, 255, 0.06);
+      --modal-bg: rgba(5, 7, 10, 0.82);
     }
 
     * {
@@ -40,6 +41,10 @@
         linear-gradient(90deg, rgba(99, 179, 237, 0.03) 1px, transparent 1px);
       background-size: 40px 40px;
       z-index: -1;
+    }
+
+    body.modal-open {
+      overflow: hidden;
     }
 
     header {
@@ -117,7 +122,9 @@
       box-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
     }
 
-    .lang-toggle {
+    .lang-toggle,
+    .login-open-btn,
+    .logout-btn {
       border: 1px solid rgba(255,255,255,0.15);
       background: rgba(255,255,255,0.06);
       color: #fff;
@@ -129,8 +136,20 @@
       letter-spacing: 0.5px;
     }
 
-    .lang-toggle:hover {
+    .lang-toggle:hover,
+    .login-open-btn:hover,
+    .logout-btn:hover {
       background: rgba(255,255,255,0.1);
+    }
+
+    .user-chip {
+      font-size: 12px;
+      color: var(--primary-blue);
+      border: 1px solid rgba(0,210,255,0.2);
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: rgba(0,210,255,0.06);
+      display: none;
     }
 
     .hero {
@@ -419,6 +438,140 @@
       cursor: not-allowed;
     }
 
+    .auth-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--modal-bg);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 20px;
+    }
+
+    .auth-overlay.show {
+      display: flex;
+    }
+
+    .auth-modal {
+      width: 100%;
+      max-width: 430px;
+      background: rgba(10, 14, 26, 0.96);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.45);
+    }
+
+    .auth-modal-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--glass-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255,255,255,0.03);
+    }
+
+    .auth-title {
+      font-size: 18px;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .auth-close {
+      background: transparent;
+      border: none;
+      color: #cbd5e1;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .auth-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 14px;
+      text-align: center;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+      color: #94a3b8;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .auth-tab.active {
+      color: var(--primary-blue);
+      background: rgba(0,210,255,0.06);
+      border-bottom: 2px solid var(--primary-blue);
+    }
+
+    .auth-body {
+      padding: 20px;
+    }
+
+    .auth-form {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .auth-form.active {
+      display: flex;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field-label {
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+
+    .field-input {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(0,0,0,0.18);
+      color: #fff;
+      border-radius: 12px;
+      padding: 12px 14px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .field-input:focus {
+      border-color: rgba(0,210,255,0.4);
+    }
+
+    .auth-submit {
+      margin-top: 6px;
+      border: 1px solid rgba(0,210,255,0.35);
+      background: rgba(0,210,255,0.12);
+      color: var(--primary-blue);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .auth-hint {
+      font-size: 12px;
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+
+    .auth-message {
+      min-height: 18px;
+      font-size: 12px;
+      color: var(--primary-blue);
+    }
+
     @media (max-width: 768px) {
       .hero h1 {
         font-size: 32px;
@@ -453,26 +606,29 @@
     </div>
 
     <div class="header-right">
+      <div class="user-chip" id="userChip"></div>
+      <button class="logout-btn" id="logoutBtn" onclick="logoutUser()" style="display:none;" data-i18n="logoutBtn">Logout</button>
+      <button class="login-open-btn" id="loginOpenBtn" onclick="openAuthModal()" data-i18n="loginBtn">Login</button>
       <button class="lang-toggle" onclick="toggleLanguage()" id="langToggleBtn">繁中</button>
       <div class="header-badge" data-i18n="headerBadge">LINK ESTABLISHED</div>
     </div>
   </header>
 
   <div class="hero">
-    <div class="hero-tag" data-i18n="heroTag">TERMINAL ACCESS</div>
+    <div class="hero-tag" data-i18n="heroTag">TERMINAL ACCESS v2.0.4</div>
     <h1 data-i18n="heroTitle">Department Knowledge Base</h1>
     <p data-i18n="heroDesc">Select a specialized data stream, then open the chatbot popup to ask questions.</p>
   </div>
 
   <div class="grid">
-    <a class="db-card active" href="#" onclick="selectKB('a-products', this); return false;">
+    <a class="db-card active" href="#" onclick="selectKB('bu1', this); return false;">
       <span class="card-id">DATA_STREAM // 01</span>
       <div class="card-title" data-i18n="card1Title">BU1 Database</div>
-      <p class="card-desc" data-i18n="card1Desc">This database for BU1 handles structured, consistent data categories.</p>
+      <p class="card-desc" data-i18n="card1Desc">This database for BU1 handles structured, consistent data.</p>
       <div class="card-action" data-i18n="cardAction">ACTIVATE CHAT MODE →</div>
     </a>
 
-    <a class="db-card" href="#" onclick="selectKB('non-a', this); return false;">
+    <a class="db-card" href="#" onclick="selectKB('bu3', this); return false;">
       <span class="card-id">DATA_STREAM // 02</span>
       <div class="card-title" data-i18n="card2Title">BU3 Database</div>
       <p class="card-desc" data-i18n="card2Desc">This database for BU3 handles diverse, flexible data.</p>
@@ -527,10 +683,69 @@
     </form>
   </div>
 
+  <div class="auth-overlay" id="authOverlay">
+    <div class="auth-modal">
+      <div class="auth-modal-header">
+        <div class="auth-title" data-i18n="authTitle">User Access</div>
+        <button class="auth-close" onclick="closeAuthModal()">×</button>
+      </div>
+
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="loginTabBtn" onclick="switchAuthTab('login')" data-i18n="loginTab">Login</div>
+        <div class="auth-tab" id="signupTabBtn" onclick="switchAuthTab('signup')" data-i18n="signupTab">Sign Up</div>
+      </div>
+
+      <div class="auth-body">
+        <div class="auth-message" id="authMessage"></div>
+
+        <form class="auth-form active" id="loginForm" onsubmit="loginUser(event)">
+          <div class="field-group">
+            <label class="field-label" for="loginCompanyId" data-i18n="companyIdLabel">Company ID</label>
+            <input class="field-input" id="loginCompanyId" type="text" />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="loginPassword" data-i18n="passwordLabel">Password</label>
+            <input class="field-input" id="loginPassword" type="password" />
+          </div>
+
+          <button class="auth-submit" type="submit" data-i18n="loginBtn">Login</button>
+          <div class="auth-hint" data-i18n="loginHint">Demo only: this static page stores users in your browser for testing.</div>
+        </form>
+
+        <form class="auth-form" id="signupForm" onsubmit="signupUser(event)">
+          <div class="field-group">
+            <label class="field-label" for="signupName" data-i18n="fullNameLabel">Full Name</label>
+            <input class="field-input" id="signupName" type="text" />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="signupCompanyId" data-i18n="companyIdLabel">Company ID</label>
+            <input class="field-input" id="signupCompanyId" type="text" />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="signupPassword" data-i18n="passwordLabel">Password</label>
+            <input class="field-input" id="signupPassword" type="password" />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="signupConfirmPassword" data-i18n="confirmPasswordLabel">Confirm Password</label>
+            <input class="field-input" id="signupConfirmPassword" type="password" />
+          </div>
+
+          <button class="auth-submit" type="submit" data-i18n="signupBtn">Sign Up</button>
+          <div class="auth-hint" data-i18n="signupHint">For production use, connect this sign-up flow to your backend and database.</div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <script>
-    let currentKB = "a-products";
+    let currentKB = "bu1";
     let chatOpen = false;
     let currentLanguage = "en";
+    let currentUser = null;
 
     const translations = {
       en: {
@@ -539,10 +754,10 @@
         heroTag: "TERMINAL ACCESS v2.0.4",
         heroTitle: "Department Knowledge Base",
         heroDesc: "Select a specialized data stream, then open the chatbot popup to ask questions.",
-        card1Title: "A Products Database",
-        card1Desc: "Comprehensive analytics and technical specifications for Tier-1 \"A\" product categories.",
-        card2Title: "Non A Products Database",
-        card2Desc: "Secondary product development logs and cross-functional engineering repositories.",
+        card1Title: "BU1 Database",
+        card1Desc: "This database for BU1 handles structured, consistent data.",
+        card2Title: "BU3 Database",
+        card2Desc: "This database for BU3 handles diverse, flexible data.",
         card3Title: "Newcomer Training",
         card3Desc: "Protocol induction, onboarding modules, and R&D department standard operating procedures.",
         card4Title: "General R&D Database",
@@ -555,10 +770,32 @@
         chatPlaceholder: "Type your question...",
         welcomeSystem: "Popup chatbot ready.",
         welcomeAi: "Hello. Choose a database card, then ask your question here.",
-        kbLabelPrefix: "Active Knowledge Base: ",
+        kbLabelPrefix: "Active Knowledge Base:",
         switchedTo: "Knowledge base switched to ",
         connectionError: "Cannot connect to backend. Make sure http://localhost:3000/chat is running.",
-        sending: "Sending..."
+        sending: "Sending...",
+        authTitle: "User Access",
+        loginTab: "Login",
+        signupTab: "Sign Up",
+        loginBtn: "Login",
+        logoutBtn: "Logout",
+        signupBtn: "Sign Up",
+        companyIdLabel: "Company ID",
+        passwordLabel: "Password",
+        confirmPasswordLabel: "Confirm Password",
+        fullNameLabel: "Full Name",
+        loginHint: "Demo only: this static page stores users in your browser for testing.",
+        signupHint: "For production use, connect this sign-up flow to your backend and database.",
+        authNeedLogin: "Please log in first.",
+        loginSuccess: "Login successful.",
+        logoutSuccess: "Logged out.",
+        signupSuccess: "Sign-up successful. You can now log in.",
+        fieldRequired: "Please complete all required fields.",
+        passwordMismatch: "Passwords do not match.",
+        userExists: "This Company ID already exists.",
+        userNotFound: "Company ID not found.",
+        wrongPassword: "Incorrect password.",
+        loggedInAs: "Logged in as"
       },
       "zh-TW": {
         pageTitle: "SZS 研發智慧入口網站",
@@ -566,10 +803,10 @@
         heroTag: "終端存取 v2.0.4",
         heroTitle: "部門知識資料庫",
         heroDesc: "請先選擇知識資料流，再開啟右下角聊天視窗進行提問。",
-        card1Title: "A 類產品資料庫",
-        card1Desc: "提供 Tier-1 A 類產品的完整分析資料與技術規格。",
-        card2Title: "非 A 類產品資料庫",
-        card2Desc: "收錄次要產品開發紀錄與跨部門工程知識庫。",
+        card1Title: "BU1 資料庫",
+        card1Desc: "此資料庫供 BU1 使用，處理結構化且一致性的資料。",
+        card2Title: "BU3 資料庫",
+        card2Desc: "此資料庫供 BU3 使用，處理多樣化且彈性的資料。",
         card3Title: "新人訓練資料庫",
         card3Desc: "包含新人報到流程、教育訓練模組與研發部門標準作業程序。",
         card4Title: "研發通用資料庫",
@@ -585,20 +822,42 @@
         kbLabelPrefix: "目前知識資料庫：",
         switchedTo: "已切換至知識資料庫：",
         connectionError: "無法連線到後端。請確認 http://localhost:3000/chat 已啟動。",
-        sending: "傳送中..."
+        sending: "傳送中...",
+        authTitle: "使用者登入",
+        loginTab: "登入",
+        signupTab: "註冊",
+        loginBtn: "登入",
+        logoutBtn: "登出",
+        signupBtn: "註冊",
+        companyIdLabel: "公司工號",
+        passwordLabel: "密碼",
+        confirmPasswordLabel: "確認密碼",
+        fullNameLabel: "姓名",
+        loginHint: "此版本僅為示範，帳號資料會暫存在您的瀏覽器中。",
+        signupHint: "正式上線時，請將註冊流程連接到後端與資料庫。",
+        authNeedLogin: "請先登入。",
+        loginSuccess: "登入成功。",
+        logoutSuccess: "已登出。",
+        signupSuccess: "註冊成功，您現在可以登入。",
+        fieldRequired: "請完整填寫所有欄位。",
+        passwordMismatch: "兩次輸入的密碼不一致。",
+        userExists: "此公司工號已存在。",
+        userNotFound: "找不到此公司工號。",
+        wrongPassword: "密碼錯誤。",
+        loggedInAs: "目前登入"
       }
     };
 
     const kbNames = {
       en: {
-        "a-products": "A PRODUCTS",
-        "non-a": "NON A PRODUCTS",
+        "bu1": "BU1",
+        "bu3": "BU3",
         "training": "NEWCOMER TRAINING",
         "general": "GENERAL R&D"
       },
       "zh-TW": {
-        "a-products": "A 類產品",
-        "non-a": "非 A 類產品",
+        "bu1": "BU1",
+        "bu3": "BU3",
         "training": "新人訓練",
         "general": "研發通用"
       }
@@ -622,6 +881,7 @@
       document.getElementById("langToggleBtn").textContent = lang === "en" ? "繁中" : "EN";
 
       updateKBLabel();
+      updateUserUI();
     }
 
     function toggleLanguage() {
@@ -635,6 +895,12 @@
     }
 
     function toggleChat() {
+      if (!currentUser) {
+        openAuthModal();
+        setAuthMessage(translations[currentLanguage].authNeedLogin);
+        return;
+      }
+
       const popup = document.getElementById("chatPopup");
       chatOpen = !chatOpen;
 
@@ -660,10 +926,6 @@
       }
 
       addSystemMessage(translations[currentLanguage].switchedTo + kbNames[currentLanguage][kb] + "。");
-
-      if (!chatOpen) {
-        toggleChat();
-      }
     }
 
     function addSystemMessage(text) {
@@ -687,6 +949,12 @@
     async function sendMessage(event) {
       event.preventDefault();
 
+      if (!currentUser) {
+        openAuthModal();
+        setAuthMessage(translations[currentLanguage].authNeedLogin);
+        return;
+      }
+
       const input = document.getElementById("chatInput");
       const sendBtn = document.getElementById("sendBtn");
       const message = input.value.trim();
@@ -707,7 +975,8 @@
           body: JSON.stringify({
             message: message,
             knowledgeBaseId: currentKB,
-            language: currentLanguage
+            language: currentLanguage,
+            companyId: currentUser.companyId
           })
         });
 
@@ -725,7 +994,176 @@
       }
     }
 
+    function openAuthModal() {
+      document.getElementById("authOverlay").classList.add("show");
+      document.body.classList.add("modal-open");
+    }
+
+    function closeAuthModal() {
+      document.getElementById("authOverlay").classList.remove("show");
+      document.body.classList.remove("modal-open");
+      clearAuthMessage();
+    }
+
+    function switchAuthTab(tab) {
+      const loginTabBtn = document.getElementById("loginTabBtn");
+      const signupTabBtn = document.getElementById("signupTabBtn");
+      const loginForm = document.getElementById("loginForm");
+      const signupForm = document.getElementById("signupForm");
+
+      if (tab === "login") {
+        loginTabBtn.classList.add("active");
+        signupTabBtn.classList.remove("active");
+        loginForm.classList.add("active");
+        signupForm.classList.remove("active");
+      } else {
+        loginTabBtn.classList.remove("active");
+        signupTabBtn.classList.add("active");
+        loginForm.classList.remove("active");
+        signupForm.classList.add("active");
+      }
+
+      clearAuthMessage();
+    }
+
+    function setAuthMessage(text) {
+      document.getElementById("authMessage").textContent = text;
+    }
+
+    function clearAuthMessage() {
+      document.getElementById("authMessage").textContent = "";
+    }
+
+    function getStoredUsers() {
+      const raw = localStorage.getItem("szs_demo_users");
+      return raw ? JSON.parse(raw) : [];
+    }
+
+    function saveStoredUsers(users) {
+      localStorage.setItem("szs_demo_users", JSON.stringify(users));
+    }
+
+    function signupUser(event) {
+      event.preventDefault();
+
+      const name = document.getElementById("signupName").value.trim();
+      const companyId = document.getElementById("signupCompanyId").value.trim();
+      const password = document.getElementById("signupPassword").value;
+      const confirmPassword = document.getElementById("signupConfirmPassword").value;
+
+      if (!name || !companyId || !password || !confirmPassword) {
+        setAuthMessage(translations[currentLanguage].fieldRequired);
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        setAuthMessage(translations[currentLanguage].passwordMismatch);
+        return;
+      }
+
+      const users = getStoredUsers();
+      const existingUser = users.find(function(user) {
+        return user.companyId.toLowerCase() === companyId.toLowerCase();
+      });
+
+      if (existingUser) {
+        setAuthMessage(translations[currentLanguage].userExists);
+        return;
+      }
+
+      users.push({
+        name: name,
+        companyId: companyId,
+        password: password
+      });
+
+      saveStoredUsers(users);
+      setAuthMessage(translations[currentLanguage].signupSuccess);
+
+      document.getElementById("signupForm").reset();
+      switchAuthTab("login");
+    }
+
+    function loginUser(event) {
+      event.preventDefault();
+
+      const companyId = document.getElementById("loginCompanyId").value.trim();
+      const password = document.getElementById("loginPassword").value;
+
+      if (!companyId || !password) {
+        setAuthMessage(translations[currentLanguage].fieldRequired);
+        return;
+      }
+
+      const users = getStoredUsers();
+      const user = users.find(function(item) {
+        return item.companyId.toLowerCase() === companyId.toLowerCase();
+      });
+
+      if (!user) {
+        setAuthMessage(translations[currentLanguage].userNotFound);
+        return;
+      }
+
+      if (user.password !== password) {
+        setAuthMessage(translations[currentLanguage].wrongPassword);
+        return;
+      }
+
+      currentUser = {
+        name: user.name,
+        companyId: user.companyId
+      };
+
+      sessionStorage.setItem("szs_demo_current_user", JSON.stringify(currentUser));
+      updateUserUI();
+      closeAuthModal();
+      addSystemMessage(translations[currentLanguage].loginSuccess);
+      document.getElementById("loginForm").reset();
+    }
+
+    function logoutUser() {
+      currentUser = null;
+      sessionStorage.removeItem("szs_demo_current_user");
+      updateUserUI();
+
+      if (chatOpen) {
+        chatOpen = false;
+        document.getElementById("chatPopup").classList.remove("open");
+      }
+
+      addSystemMessage(translations[currentLanguage].logoutSuccess);
+    }
+
+    function updateUserUI() {
+      const userChip = document.getElementById("userChip");
+      const loginOpenBtn = document.getElementById("loginOpenBtn");
+      const logoutBtn = document.getElementById("logoutBtn");
+
+      if (currentUser) {
+        userChip.style.display = "inline-flex";
+        userChip.textContent = translations[currentLanguage].loggedInAs + ": " + currentUser.companyId;
+        loginOpenBtn.style.display = "none";
+        logoutBtn.style.display = "inline-block";
+      } else {
+        userChip.style.display = "none";
+        userChip.textContent = "";
+        loginOpenBtn.style.display = "inline-block";
+        logoutBtn.style.display = "none";
+      }
+    }
+
+    function restoreSession() {
+      const raw = sessionStorage.getItem("szs_demo_current_user");
+      if (raw) {
+        currentUser = JSON.parse(raw);
+      }
+      updateUserUI();
+    }
+
     applyLanguage("en");
+    restoreSession();
+    updateKBLabel();
   </script>
 
 </body>
