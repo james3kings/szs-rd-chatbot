@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SZS R&D AI Powered Database</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --primary-blue: #00d2ff;
@@ -776,6 +777,11 @@
     let currentLanguage = "en";
     let currentUser = null;
 
+    // 2. UPDATED WITH YOUR BACKEND INFO
+    const supabaseUrl = 'https://ngxkiuokbulqezxvrkxq.supabase.co'; 
+    const supabaseKey = 'sb_publishable__9fTb2Z2-OMFAILIQ0KNZw_rGgIEMe2'; // PASTE YOUR KEY FROM STEP 1 HERE
+    const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
     const translations = {
       en: {
         pageTitle: "SZS R&D Intelligence Portal",
@@ -801,7 +807,7 @@
         welcomeAi: "Hello. Choose a database card, then ask your question here.",
         kbLabelPrefix: "Active Knowledge Base:",
         switchedTo: "Knowledge base switched to ",
-        connectionError: "Cannot connect to backend. Make sure http://localhost:3000/chat is running.",
+        connectionError: "Backend Access Restricted. check your RLS policies.",
         sending: "Sending...",
         authTitle: "User Access",
         loginTab: "Login",
@@ -850,7 +856,7 @@
         welcomeAi: "您好，請先選擇資料庫卡片，然後在此輸入您的問題。",
         kbLabelPrefix: "目前知識資料庫：",
         switchedTo: "已切換至知識資料庫：",
-        connectionError: "無法連線到後端。請確認 http://localhost:3000/chat 已啟動。",
+        connectionError: "後端存取限制。請檢查您的 RLS 政策。",
         sending: "傳送中...",
         authTitle: "使用者登入",
         loginTab: "登入",
@@ -969,6 +975,7 @@
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
+    // 3. UPDATED SENDMESSAGE TO UPLOAD TO STORAGE
     async function sendMessage(event) {
       event.preventDefault();
 
@@ -984,27 +991,18 @@
       sendBtn.textContent = translations[currentLanguage].sending;
 
       try {
-        const response = await fetch("http://localhost:3000/chat", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            message: message,
-            knowledgeBaseId: currentKB,
-            language: currentLanguage,
-            companyId: currentUser ? currentUser.companyId : "guest"
-          })
-        });
+        // Creates a virtual file from your text message
+        const fileName = `${currentKB}/${Date.now()}_query.txt`;
+        const { data, error } = await _supabase.storage
+          .from('my-trial-bucket') // MUST MATCH YOUR BUCKET NAME
+          .upload(fileName, message);
 
-        if (!response.ok) {
-          throw new Error("Server error");
-        }
+        if (error) throw error;
 
-        const data = await response.json();
-        addMessage("ai", data.reply || "No reply received.");
+        addMessage("ai", "Backend Response: Message saved securely to Data Stream " + currentKB);
       } catch (error) {
-        addSystemMessage(translations[currentLanguage].connectionError);
+        console.error(error);
+        addSystemMessage(translations[currentLanguage].connectionError + ": " + error.message);
       } finally {
         sendBtn.disabled = false;
         sendBtn.textContent = translations[currentLanguage].sendBtn;
