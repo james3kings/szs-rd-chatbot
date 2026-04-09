@@ -23,7 +23,7 @@
     }
 
     body {
-      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      font-family: "Segoe UI", "Microsoft JhengHei", "PingFang TC", system-ui, -apple-system, sans-serif;
       background: var(--bg-dark);
       color: #e2e8f0;
       min-height: 100vh;
@@ -53,6 +53,8 @@
       position: sticky;
       top: 0;
       z-index: 100;
+      gap: 16px;
+      flex-wrap: wrap;
     }
 
     .brand-container {
@@ -97,6 +99,13 @@
       font-weight: 600;
     }
 
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
     .header-badge {
       font-size: 10px;
       padding: 6px 12px;
@@ -106,6 +115,22 @@
       text-transform: uppercase;
       background: rgba(0, 210, 255, 0.05);
       box-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
+    }
+
+    .lang-toggle {
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .lang-toggle:hover {
+      background: rgba(255,255,255,0.1);
     }
 
     .hero {
@@ -134,7 +159,7 @@
     .hero p {
       font-size: 16px;
       color: #94a3b8;
-      max-width: 550px;
+      max-width: 700px;
       margin: 0 auto;
       line-height: 1.6;
     }
@@ -224,7 +249,6 @@
       text-transform: uppercase;
     }
 
-    /* Popup button */
     .chat-toggle-btn {
       position: fixed;
       right: 24px;
@@ -246,7 +270,6 @@
       background: rgba(0, 210, 255, 0.22);
     }
 
-    /* Popup window */
     .chat-popup {
       position: fixed;
       right: 24px;
@@ -428,70 +451,70 @@
         <div class="logo-sub">INTELLECTUAL DATA CORE</div>
       </div>
     </div>
-    <div class="header-badge">LINK ESTABLISHED</div>
+
+    <div class="header-right">
+      <button class="lang-toggle" onclick="toggleLanguage()" id="langToggleBtn">繁中</button>
+      <div class="header-badge" data-i18n="headerBadge">LINK ESTABLISHED</div>
+    </div>
   </header>
 
   <div class="hero">
-    <div class="hero-tag">TERMINAL ACCESS v2.0.4</div>
-    <h1>Department Knowledge Base</h1>
-    <p>Select a specialized data stream, then open the chatbot popup to ask questions.</p>
+    <div class="hero-tag" data-i18n="heroTag">TERMINAL ACCESS v2.0.4</div>
+    <h1 data-i18n="heroTitle">Department Knowledge Base</h1>
+    <p data-i18n="heroDesc">Select a specialized data stream, then open the chatbot popup to ask questions.</p>
   </div>
 
   <div class="grid">
     <a class="db-card active" href="#" onclick="selectKB('a-products', this); return false;">
       <span class="card-id">DATA_STREAM // 01</span>
-      <div class="card-title">A Products Database</div>
-      <p class="card-desc">Comprehensive analytics and technical specifications for Tier-1 "A" product categories.</p>
-      <div class="card-action">ACTIVATE CHAT MODE →</div>
+      <div class="card-title" data-i18n="card1Title">A Products Database</div>
+      <p class="card-desc" data-i18n="card1Desc">Comprehensive analytics and technical specifications for Tier-1 "A" product categories.</p>
+      <div class="card-action" data-i18n="cardAction">ACTIVATE CHAT MODE →</div>
     </a>
 
     <a class="db-card" href="#" onclick="selectKB('non-a', this); return false;">
       <span class="card-id">DATA_STREAM // 02</span>
-      <div class="card-title">Non A Products Database</div>
-      <p class="card-desc">Secondary product development logs and cross-functional engineering repositories.</p>
-      <div class="card-action">ACTIVATE CHAT MODE →</div>
+      <div class="card-title" data-i18n="card2Title">Non A Products Database</div>
+      <p class="card-desc" data-i18n="card2Desc">Secondary product development logs and cross-functional engineering repositories.</p>
+      <div class="card-action" data-i18n="cardAction">ACTIVATE CHAT MODE →</div>
     </a>
 
     <a class="db-card" href="#" onclick="selectKB('training', this); return false;">
       <span class="card-id">DATA_STREAM // 03</span>
-      <div class="card-title">Newcomer Training</div>
-      <p class="card-desc">Protocol induction, onboarding modules, and R&D department standard operating procedures.</p>
-      <div class="card-action">ACTIVATE CHAT MODE →</div>
+      <div class="card-title" data-i18n="card3Title">Newcomer Training</div>
+      <p class="card-desc" data-i18n="card3Desc">Protocol induction, onboarding modules, and R&D department standard operating procedures.</p>
+      <div class="card-action" data-i18n="cardAction">ACTIVATE CHAT MODE →</div>
     </a>
 
     <a class="db-card" href="#" onclick="selectKB('general', this); return false;">
       <span class="card-id">DATA_STREAM // 04</span>
-      <div class="card-title">General R&D Database</div>
-      <p class="card-desc">Universal research findings, legacy technical archives, and collaborative discovery data.</p>
-      <div class="card-action">ACTIVATE CHAT MODE →</div>
+      <div class="card-title" data-i18n="card4Title">General R&D Database</div>
+      <p class="card-desc" data-i18n="card4Desc">Universal research findings, legacy technical archives, and collaborative discovery data.</p>
+      <div class="card-action" data-i18n="cardAction">ACTIVATE CHAT MODE →</div>
     </a>
   </div>
 
   <footer>
     &copy; 2026 SHIN ZU SHING CO., LTD. <br>
-    <div class="security-notice">AUTHORIZED PERSONNEL ONLY — BIOMETRIC ENCRYPTION ACTIVE</div>
+    <div class="security-notice" data-i18n="securityNotice">AUTHORIZED PERSONNEL ONLY — BIOMETRIC ENCRYPTION ACTIVE</div>
   </footer>
 
-  <!-- Popup chatbot button -->
   <button class="chat-toggle-btn" onclick="toggleChat()" title="Open Chat">💬</button>
 
-  <!-- Popup chatbot -->
   <div class="chat-popup" id="chatPopup">
     <div class="chat-header">
       <div class="chat-header-left">
-        <div class="chat-title">SZS AI Assistant</div>
-        <div class="chat-subtitle">POPUP CHAT INTERFACE</div>
+        <div class="chat-title" data-i18n="chatTitle">SZS AI Assistant</div>
+        <div class="chat-subtitle" data-i18n="chatSubtitle">POPUP CHAT INTERFACE</div>
       </div>
       <button class="chat-close" onclick="toggleChat()">×</button>
     </div>
 
-    <div class="chat-active-kb" id="activeKBLabel">
-      Active Knowledge Base: <strong>A PRODUCTS</strong>
-    </div>
+    <div class="chat-active-kb" id="activeKBLabel"></div>
 
     <div class="chat-messages" id="chatMessages">
-      <div class="message system">Popup chatbot ready.</div>
-      <div class="message ai">Hello. Choose a database card, then ask your question here.</div>
+      <div class="message system" id="welcomeSystemMsg"></div>
+      <div class="message ai" id="welcomeAiMsg"></div>
     </div>
 
     <form class="chat-input-area" onsubmit="sendMessage(event)">
@@ -500,20 +523,116 @@
         class="chat-input"
         placeholder="Type your question..."
       ></textarea>
-      <button type="submit" class="chat-send" id="sendBtn">Send</button>
+      <button type="submit" class="chat-send" id="sendBtn" data-i18n="sendBtn">Send</button>
     </form>
   </div>
 
   <script>
     let currentKB = "a-products";
     let chatOpen = false;
+    let currentLanguage = "en";
+
+    const translations = {
+      en: {
+        pageTitle: "SZS R&D Intelligence Portal",
+        headerBadge: "LINK ESTABLISHED",
+        heroTag: "TERMINAL ACCESS v2.0.4",
+        heroTitle: "Department Knowledge Base",
+        heroDesc: "Select a specialized data stream, then open the chatbot popup to ask questions.",
+        card1Title: "A Products Database",
+        card1Desc: "Comprehensive analytics and technical specifications for Tier-1 \"A\" product categories.",
+        card2Title: "Non A Products Database",
+        card2Desc: "Secondary product development logs and cross-functional engineering repositories.",
+        card3Title: "Newcomer Training",
+        card3Desc: "Protocol induction, onboarding modules, and R&D department standard operating procedures.",
+        card4Title: "General R&D Database",
+        card4Desc: "Universal research findings, legacy technical archives, and collaborative discovery data.",
+        cardAction: "ACTIVATE CHAT MODE →",
+        securityNotice: "AUTHORIZED PERSONNEL ONLY — BIOMETRIC ENCRYPTION ACTIVE",
+        chatTitle: "SZS AI Assistant",
+        chatSubtitle: "POPUP CHAT INTERFACE",
+        sendBtn: "Send",
+        chatPlaceholder: "Type your question...",
+        welcomeSystem: "Popup chatbot ready.",
+        welcomeAi: "Hello. Choose a database card, then ask your question here.",
+        kbLabelPrefix: "Active Knowledge Base: ",
+        switchedTo: "Knowledge base switched to ",
+        connectionError: "Cannot connect to backend. Make sure http://localhost:3000/chat is running.",
+        sending: "Sending..."
+      },
+      "zh-TW": {
+        pageTitle: "SZS 研發智慧入口網站",
+        headerBadge: "連線已建立",
+        heroTag: "終端存取 v2.0.4",
+        heroTitle: "部門知識資料庫",
+        heroDesc: "請先選擇知識資料流，再開啟右下角聊天視窗進行提問。",
+        card1Title: "A 類產品資料庫",
+        card1Desc: "提供 Tier-1 A 類產品的完整分析資料與技術規格。",
+        card2Title: "非 A 類產品資料庫",
+        card2Desc: "收錄次要產品開發紀錄與跨部門工程知識庫。",
+        card3Title: "新人訓練資料庫",
+        card3Desc: "包含新人報到流程、教育訓練模組與研發部門標準作業程序。",
+        card4Title: "研發通用資料庫",
+        card4Desc: "整合通用研究成果、歷史技術檔案與協作知識內容。",
+        cardAction: "啟用聊天模式 →",
+        securityNotice: "僅限授權人員使用 — 生物辨識加密啟用中",
+        chatTitle: "SZS AI 助理",
+        chatSubtitle: "彈出式聊天介面",
+        sendBtn: "送出",
+        chatPlaceholder: "請輸入您的問題...",
+        welcomeSystem: "彈出式聊天機器人已就緒。",
+        welcomeAi: "您好，請先選擇資料庫卡片，然後在此輸入您的問題。",
+        kbLabelPrefix: "目前知識資料庫：",
+        switchedTo: "已切換至知識資料庫：",
+        connectionError: "無法連線到後端。請確認 http://localhost:3000/chat 已啟動。",
+        sending: "傳送中..."
+      }
+    };
 
     const kbNames = {
-      "a-products": "A PRODUCTS",
-      "non-a": "NON A PRODUCTS",
-      "training": "NEWCOMER TRAINING",
-      "general": "GENERAL R&D"
+      en: {
+        "a-products": "A PRODUCTS",
+        "non-a": "NON A PRODUCTS",
+        "training": "NEWCOMER TRAINING",
+        "general": "GENERAL R&D"
+      },
+      "zh-TW": {
+        "a-products": "A 類產品",
+        "non-a": "非 A 類產品",
+        "training": "新人訓練",
+        "general": "研發通用"
+      }
     };
+
+    function applyLanguage(lang) {
+      currentLanguage = lang;
+      document.documentElement.lang = lang;
+      document.title = translations[lang].pageTitle;
+
+      document.querySelectorAll("[data-i18n]").forEach(function(el) {
+        const key = el.getAttribute("data-i18n");
+        if (translations[lang][key]) {
+          el.textContent = translations[lang][key];
+        }
+      });
+
+      document.getElementById("chatInput").placeholder = translations[lang].chatPlaceholder;
+      document.getElementById("welcomeSystemMsg").textContent = translations[lang].welcomeSystem;
+      document.getElementById("welcomeAiMsg").textContent = translations[lang].welcomeAi;
+      document.getElementById("langToggleBtn").textContent = lang === "en" ? "繁中" : "EN";
+
+      updateKBLabel();
+    }
+
+    function toggleLanguage() {
+      const newLang = currentLanguage === "en" ? "zh-TW" : "en";
+      applyLanguage(newLang);
+    }
+
+    function updateKBLabel() {
+      const label = document.getElementById("activeKBLabel");
+      label.innerHTML = translations[currentLanguage].kbLabelPrefix + ' <strong>' + kbNames[currentLanguage][currentKB] + '</strong>';
+    }
 
     function toggleChat() {
       const popup = document.getElementById("chatPopup");
@@ -529,9 +648,7 @@
 
     function selectKB(kb, element) {
       currentKB = kb;
-
-      const label = document.getElementById("activeKBLabel");
-      label.innerHTML = 'Active Knowledge Base: <strong>' + kbNames[kb] + '</strong>';
+      updateKBLabel();
 
       const cards = document.querySelectorAll(".db-card");
       cards.forEach(function(card) {
@@ -542,7 +659,7 @@
         element.classList.add("active");
       }
 
-      addSystemMessage("Knowledge base switched to " + kbNames[kb] + ".");
+      addSystemMessage(translations[currentLanguage].switchedTo + kbNames[currentLanguage][kb] + "。");
 
       if (!chatOpen) {
         toggleChat();
@@ -579,7 +696,7 @@
       addMessage("user", message);
       input.value = "";
       sendBtn.disabled = true;
-      sendBtn.textContent = "Sending...";
+      sendBtn.textContent = translations[currentLanguage].sending;
 
       try {
         const response = await fetch("http://localhost:3000/chat", {
@@ -589,7 +706,8 @@
           },
           body: JSON.stringify({
             message: message,
-            knowledgeBaseId: currentKB
+            knowledgeBaseId: currentKB,
+            language: currentLanguage
           })
         });
 
@@ -600,12 +718,14 @@
         const data = await response.json();
         addMessage("ai", data.reply || "No reply received.");
       } catch (error) {
-        addSystemMessage("Cannot connect to backend. Make sure http://localhost:3000/chat is running.");
+        addSystemMessage(translations[currentLanguage].connectionError);
       } finally {
         sendBtn.disabled = false;
-        sendBtn.textContent = "Send";
+        sendBtn.textContent = translations[currentLanguage].sendBtn;
       }
     }
+
+    applyLanguage("en");
   </script>
 
 </body>
