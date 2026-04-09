@@ -277,16 +277,25 @@
       border: 1px solid rgba(0, 210, 255, 0.4);
       border-radius: 50%;
       background: rgba(0, 210, 255, 0.12);
-      color: var(--primary-blue);
-      font-size: 26px;
       cursor: pointer;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
       backdrop-filter: blur(10px);
       z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
     }
 
     .chat-toggle-btn:hover {
       background: rgba(0, 210, 255, 0.22);
+    }
+
+    .chat-toggle-logo {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+      display: block;
     }
 
     .chat-popup {
@@ -323,6 +332,19 @@
       display: flex;
       flex-direction: column;
       gap: 4px;
+    }
+
+    .chat-brand-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chat-header-logo {
+      width: 30px;
+      height: 30px;
+      object-fit: contain;
+      display: block;
     }
 
     .chat-title {
@@ -655,13 +677,20 @@
     <div class="security-notice" data-i18n="securityNotice">AUTHORIZED PERSONNEL ONLY — INTERNAL USE ONLY</div>
   </footer>
 
-  <button class="chat-toggle-btn" onclick="toggleChat()" title="Open Chat">💬</button>
+  <button class="chat-toggle-btn" onclick="toggleChat()" title="Open Chat">
+    <img src="logo.png" alt="SZS Chat" class="chat-toggle-logo">
+  </button>
 
   <div class="chat-popup" id="chatPopup">
     <div class="chat-header">
       <div class="chat-header-left">
-        <div class="chat-title" data-i18n="chatTitle">SZS AI Assistant</div>
-        <div class="chat-subtitle" data-i18n="chatSubtitle">POPUP CHAT INTERFACE</div>
+        <div class="chat-brand-row">
+          <img src="logo.png" alt="SZS Logo" class="chat-header-logo">
+          <div>
+            <div class="chat-title" data-i18n="chatTitle">SZS AI Assistant</div>
+            <div class="chat-subtitle" data-i18n="chatSubtitle">POPUP CHAT INTERFACE</div>
+          </div>
+        </div>
       </div>
       <button class="chat-close" onclick="toggleChat()">×</button>
     </div>
@@ -895,12 +924,6 @@
     }
 
     function toggleChat() {
-      if (!currentUser) {
-        openAuthModal();
-        setAuthMessage(translations[currentLanguage].authNeedLogin);
-        return;
-      }
-
       const popup = document.getElementById("chatPopup");
       chatOpen = !chatOpen;
 
@@ -949,12 +972,6 @@
     async function sendMessage(event) {
       event.preventDefault();
 
-      if (!currentUser) {
-        openAuthModal();
-        setAuthMessage(translations[currentLanguage].authNeedLogin);
-        return;
-      }
-
       const input = document.getElementById("chatInput");
       const sendBtn = document.getElementById("sendBtn");
       const message = input.value.trim();
@@ -976,7 +993,7 @@
             message: message,
             knowledgeBaseId: currentKB,
             language: currentLanguage,
-            companyId: currentUser.companyId
+            companyId: currentUser ? currentUser.companyId : "guest"
           })
         });
 
@@ -1126,11 +1143,6 @@
       currentUser = null;
       sessionStorage.removeItem("szs_demo_current_user");
       updateUserUI();
-
-      if (chatOpen) {
-        chatOpen = false;
-        document.getElementById("chatPopup").classList.remove("open");
-      }
 
       addSystemMessage(translations[currentLanguage].logoutSuccess);
     }
